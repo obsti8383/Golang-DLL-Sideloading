@@ -76,6 +76,9 @@ Problem is that at least in the Go version 1.15.8 is that you can't use the func
 
 You can still call the windows method manually using the following code (from <https://github.com/keybase/kbfs/blob/master/vendor/github.com/keybase/client/go/libkb/saferdllloading_windows.go>):
 
+
+### Example with SetDLLDirectory
+
 safedllloading.go: 
 
     // Copyright 2016 Keybase, Inc. All rights reserved. Use of
