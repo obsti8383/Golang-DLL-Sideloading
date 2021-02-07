@@ -57,10 +57,12 @@ Example:
 
 Now we see lots of tries to access DLLs in the current directory of the application: 
 ![ProcMon2](./3.png) 
+![ProcMon2_2](./4.png)
  
 Static imports: 
-![PE2](./4.png)
- 
+
+![PE2](./5.png)
+
  
 ## Remediation 
 
@@ -149,7 +151,6 @@ Example Main.go:
 
 This mostly remediates the issues with fyne.io DLLs, except the static opengl32.dll and its dependency glu32.dll, which still remain (because of being a static dependency compiled into the file header):
  
-![ProcMon3](./5.png)
 ![ProcMon4](./6.png)
 
 ## References
