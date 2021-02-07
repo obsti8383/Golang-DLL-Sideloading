@@ -24,10 +24,10 @@ The following tests have been done on Windows 10 with go version 1.15.8 windows/
     }
  
 As we can see in Process Monitor (sysinternals tools) there are no tries to open any DLL in the current directory: 
-
+![ProcMon1](./1.png)
 
 In the file header import table only the kernel32.dll is listed (not affected since it is in the so called Known DLLs list): 
-
+![PE1](./2.png)
 
 ### Simple fyne.io program 
 
@@ -56,19 +56,19 @@ Example:
     } 
 
 Now we see lots of tries to access DLLs in the current directory of the application: 
- 
+![ProcMon2](./3.png) 
  
 Static imports: 
- 
+![PE2](./4.png)
  
  
 ## Remediation 
 
 As described in the articles (see references) there are three methods to remediate the issue for at least the dynamically loaded DLLs:
 
-1.) Make sure in the source code that loads the DLL that the current directory is excluded (e.g. by using an absolut path) - best method, but not available if you use third party libraries that you don't want to patch
-2.) Call `SetDLLDirectory("")` at the start of your program (in `main` or `init`), to exclude the local directory from the search path. This will not work, if your library loads the DLL in an `init()` function that precedes your code. Available since Windows 7 with patch.
-3.) Call `SetDefaultDllDirectories(0x00000800)` to restrict the search path only to system32 directory. This will not work, if your library loads the DLL in an `init()` function that precedes your code. Available since Windows 8.
+1. Make sure in the source code that loads the DLL that the current directory is excluded (e.g. by using an absolut path) - best method, but not available if you use third party libraries that you don't want to patch
+2. Call `SetDLLDirectory("")` at the start of your program (in `main` or `init`), to exclude the local directory from the search path. This will not work, if your library loads the DLL in an `init()` function that precedes your code. Available since Windows 7 with patch.
+3. Call `SetDefaultDllDirectories(0x00000800)` to restrict the search path only to system32 directory. This will not work, if your library loads the DLL in an `init()` function that precedes your code. Available since Windows 8.
 
 Problem is that at least in the Go version 1.15.8 is that you can't use the function call `windows.SetDllDirectory("")` (from package `golang.org/x/sys/windows`) because this doesn't work (perhaps an issue in converting empty strings???). Using `windows.SetDefaultDllDirectories(0x00000800)` however works.
 
@@ -149,6 +149,8 @@ Example Main.go:
 
 This mostly remediates the issues with fyne.io DLLs, except the static opengl32.dll and its dependency glu32.dll, which still remain (because of being a static dependency compiled into the file header):
  
+![ProcMon3](./5.png)
+![ProcMon4](./6.png)
 
 ## References
 
